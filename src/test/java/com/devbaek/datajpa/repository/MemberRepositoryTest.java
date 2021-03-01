@@ -65,4 +65,14 @@ class MemberRepositoryTest {
         assertThat(deletedCount).isZero();
     }
 
+    @Test
+    void queryMethodTest() {
+        Member member1 = new Member("member1", 20);
+        em.persist(member1);
+        List<Member> members = memberRepository.findByUsernameAndAgeGreaterThan("member1", 19);
+
+        assertThat(members.get(0).getAge()).isEqualTo(20);
+
+    }
+
 }
