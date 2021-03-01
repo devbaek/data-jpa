@@ -129,4 +129,21 @@ class MemberRepositoryTest {
             System.out.println("dto = " + dto);
         }
     }
+
+    @Test
+    void collectionParameterBindingTest() {
+        Member member1 = new Member("member1", 20);
+        Member member2 = new Member("member2", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        List<String> names = new ArrayList<>();
+        names.add("member1");
+        names.add("member2");
+
+        List<Member> byNames = memberRepository.findByNames(names);
+
+        assertThat(byNames.size()).isEqualTo(2);
+        assertThat(byNames.get(0).getUsername()).isEqualTo("member1");
+    }
 }
