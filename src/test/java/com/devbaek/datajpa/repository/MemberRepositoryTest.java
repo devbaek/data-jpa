@@ -1,13 +1,17 @@
 package com.devbaek.datajpa.repository;
 
+import com.devbaek.datajpa.dto.MemberDto;
 import com.devbaek.datajpa.entity.Member;
+import com.devbaek.datajpa.entity.Team;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,6 +23,8 @@ class MemberRepositoryTest {
     EntityManager em;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    TeamRepository teamRepository;
 
     @Test
     void basicTest() throws Exception{
@@ -104,4 +110,23 @@ class MemberRepositoryTest {
         assertThat(members.get(0).getAge()).isEqualTo(20);
     }
 
+    @Test
+    void testQueryFindByDto() {
+        Team teamA = new Team("teamA");
+        teamRepository.save(teamA);
+
+        Member member1 = new Member("member1", 20, teamA);
+        Member member2 = new Member("member2", 20, teamA);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        List<MemberDto> memberDto = memberRepository.findMemberDto();
+
+        assertThat(memberDto.get(0).getUsername()).isEqualTo("member1");
+        assertThat(memberDto.size()).isEqualTo(2);
+
+        for (MemberDto dto : memberDto) {
+            System.out.println("dto = " + dto);
+        }
+    }
 }
