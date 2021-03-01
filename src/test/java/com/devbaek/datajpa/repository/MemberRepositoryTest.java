@@ -279,4 +279,34 @@ class MemberRepositoryTest {
             System.out.println("team = " + member.getTeam().getName());
         }
     }
+
+    @Test
+    void queryHintTest() {
+        // given
+        Member member1 = memberRepository.save(new Member("member1", 10));
+        em.flush();
+        em.clear();
+
+        // when
+        Member member = memberRepository.findReadOnlyByUsername("member1");
+        member.changeName("member2");
+        em.flush();
+
+        assertThat(member.getUsername()).isEqualTo("member2");
+    }
+
+    @Test
+    void lockTest() {
+        // given
+        Member member1 = memberRepository.save(new Member("member1", 10));
+        em.flush();
+        em.clear();
+
+        // when
+        Member member = memberRepository.findLockByUsername("member1").get(0);
+        member.changeName("member2");
+        em.flush();
+
+        assertThat(member.getUsername()).isEqualTo("member2");
+    }
 }
