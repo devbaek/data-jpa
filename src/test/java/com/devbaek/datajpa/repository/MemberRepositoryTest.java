@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 class MemberRepositoryTest {
 
-    @Autowired
+    @PersistenceContext
     EntityManager em;
     @Autowired
     MemberRepository memberRepository;
@@ -197,5 +198,28 @@ class MemberRepositoryTest {
 //        assertThat(page.getTotalPages()).isEqualTo(2);
         assertThat(page.isFirst()).isTrue();
         assertThat(page.hasNext()).isTrue();
+    }
+
+    @Test
+    void bulkUpdate() {
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 16));
+        memberRepository.save(new Member("member3", 17));
+        memberRepository.save(new Member("member4", 18));
+        memberRepository.save(new Member("member5", 19));
+
+        int resultCount = memberRepository.bulkAgePlus(16);
+        List<Member> result = memberRepository.findByUsername("member5");
+        Member member5 = result.get(0);
+        System.out.println("member5 = " + member5.getAge());
+
+        // Modifying option에 clear를 넣으면 clear 해 줄 필요 없
+//        em.clear();
+
+        List<Member> resultAfterClear = memberRepository.findByUsername("member5");
+        Member member5AfterClear = resultAfterClear.get(0);
+        System.out.println("member5AfterClear = " + member5AfterClear.getAge());
+
+        assertThat(resultCount).isEqualTo(4);
     }
 }

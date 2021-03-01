@@ -54,4 +54,17 @@ class MemberJpaRepositoryTest {
         long deletedCount = memberJpaRepository.count();
         assertThat(deletedCount).isZero();
     }
+
+    @Test
+    void bulkUpdate() {
+        memberJpaRepository.save(new Member("member1", 10));
+        memberJpaRepository.save(new Member("member2", 16));
+        memberJpaRepository.save(new Member("member3", 17));
+        memberJpaRepository.save(new Member("member4", 18));
+        memberJpaRepository.save(new Member("member5", 19));
+
+        int resultCount = memberJpaRepository.bulkAgePlus(16);
+
+        assertThat(resultCount).isEqualTo(4);
+    }
 }
