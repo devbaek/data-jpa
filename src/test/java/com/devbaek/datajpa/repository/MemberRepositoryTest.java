@@ -68,11 +68,40 @@ class MemberRepositoryTest {
     @Test
     void queryMethodTest() {
         Member member1 = new Member("member1", 20);
-        em.persist(member1);
+        Member member2 = new Member("member2", 30);
+
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
         List<Member> members = memberRepository.findByUsernameAndAgeGreaterThan("member1", 19);
 
         assertThat(members.get(0).getAge()).isEqualTo(20);
+    }
 
+    @Test
+    void namedQueryTest() {
+        Member member1 = new Member("member1", 20);
+        Member member2 = new Member("member2", 30);
+
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        List<Member> members = memberRepository.findByUsername("member1");
+
+        assertThat(members.get(0).getAge()).isEqualTo(20);
+    }
+
+    @Test
+    void testQuery() {
+        Member member1 = new Member("member1", 20);
+        Member member2 = new Member("member2", 30);
+
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        List<Member> members = memberRepository.findUser("member1", 20);
+
+        assertThat(members.get(0).getAge()).isEqualTo(20);
     }
 
 }
